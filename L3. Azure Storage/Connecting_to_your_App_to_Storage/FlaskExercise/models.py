@@ -36,20 +36,12 @@ class Animal(db.Model):
             self.image_path = filename
         db.session.commit()
 '''
-from FlaskExercise import app, db
-from flask import flash
+from FlaskExercise import db
+from flask import current_app, flash
 from werkzeug.utils import secure_filename
 from azure.storage.blob import BlobServiceClient
 import uuid
 
-# ---------- Blob Storage setup ----------
-blob_container = app.config['BLOB_CONTAINER']
-blob_service = BlobServiceClient(
-    account_url=f"https://{app.config['BLOB_ACCOUNT']}.blob.core.windows.net",
-    credential=app.config['BLOB_STORAGE_KEY']
-)
-
-# ---------- Animal model ----------
 class Animal(db.Model):
     __tablename__ = 'animals'
     id = db.Column(db.Integer, primary_key=True)
@@ -66,6 +58,13 @@ class Animal(db.Model):
         Save changes to the database and upload the file to Blob Storage if provided.
         """
         if file:
+            # Access Flask config inside the function (after app context exists)
+            blob_container = current_app.config['BLOB_CONTAINER']
+            blob_service = BlobServiceClient(
+                account_url=f"https://{current_app.config['BLOB_ACCOUNT']}.blob.core.windows.net",
+                credential=current_app.config['BLOB_STORAGE_KEY']
+            )
+
             # Generate a secure, unique filename
             filename = secure_filename(file.filename)
             file_extension = filename.rsplit('.', 1)[1]
@@ -73,11 +72,11 @@ class Animal(db.Model):
             filename = random_filename + '.' + file_extension
 
             try:
-                # Upload new image to Blob Storage
+                # Upload new image
                 blob_client = blob_service.get_blob_client(container=blob_container, blob=filename)
                 blob_client.upload_blob(file, overwrite=True)
 
-                # Delete old image from Blob Storage if exists
+                # Delete old image if exists
                 if self.image_path:
                     old_blob = blob_service.get_blob_client(container=blob_container, blob=self.image_path)
                     old_blob.delete_blob()
@@ -87,5 +86,3 @@ class Animal(db.Model):
             self.image_path = filename
 
         db.session.commit()
-
-
