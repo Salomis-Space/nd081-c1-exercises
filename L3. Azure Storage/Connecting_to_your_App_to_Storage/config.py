@@ -13,6 +13,6 @@ class Config(object):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     BLOB_ACCOUNT = os.environ.get('BLOB_ACCOUNT') or 'zoo1store'
-    BLOB_STORAGE_KEY = os.environ.get('BLOB_STORAGE_KEY') or 'xuXDIpQ2eJa3vefVhteOHv+VRE/f83Xhusgqgdecmjl1Uy3lqXFhjFdcaQOd7IbrqJZI+7YuC8mB+ASt5Qy/YA=='
+    BLOB_STORAGE_KEY = os.environ.get('BLOB_STORAGE_KEY') or 'your key '
     BLOB_CONTAINER = os.environ.get('BLOB_CONTAINER') or '$logs'
 
