@@ -16,19 +16,17 @@ class Config(object):
     BLOB_STORAGE_KEY = os.environ.get('BLOB_STORAGE_KEY') or '[BLOB_STORAGE_KEY_GOES_HERE]'
     BLOB_CONTAINER = os.environ.get('BLOB_CONTAINER') or '[BLOB_CONTAINER_GOES_HERE]'
 '''
-import os
+class Config:
+    SECRET_KEY = 'your-secret-key'
+    
+    # SQL Database
+    SQL_SERVER = 'my-zoo-server.database.windows.net'
+    SQL_DATABASE = 'zoodb'
+    SQL_USER_NAME = 'udacity-user'
+    SQL_PASSWORD = 'Uda@12345'
+    SQLALCHEMY_DATABASE_URI = f"mssql+pyodbc://{SQL_USER_NAME}:{SQL_PASSWORD}@{SQL_SERVER}/{SQL_DATABASE}?driver=ODBC+Driver+18+for+SQL+Server"
 
-# ---------- Azure SQL Database ----------
-SQL_SERVER = os.getenv('SQL_SERVER', 'my-zoo-server.database.windows.net')
-SQL_DATABASE = os.getenv('SQL_DATABASE', 'zoodb')
-SQL_USER_NAME = os.getenv('SQL_USER_NAME', 'udacity-user')
-SQL_PASSWORD = os.getenv('SQL_PASSWORD', 'Uda@12345')
-SQL_DRIVER = '{ODBC Driver 17 for SQL Server}'
-
-# ---------- Azure Blob Storage ----------
-BLOB_ACCOUNT = os.getenv('BLOB_ACCOUNT', 'zoo1store')
-BLOB_STORAGE_KEY = os.getenv('BLOB_STORAGE_KEY', 'EQqq8fBx7VLwVC1Y0UAGMqGhByXFk/77i4KLqE0ORN2VLFIv69OVjhrvYrQkNt60e4LzEujKbZM7+AStQcup1w==')
-BLOB_CONTAINER = os.getenv('BLOB_CONTAINER', '$logs')  # Udacity-provided container
-
-# ---------- SQLAlchemy connection string ----------
-SQLALCHEMY_DATABASE_URI = f'mssql+pyodbc://{SQL_USER_NAME}:{SQL_PASSWORD}@{SQL_SERVER}:1433/{SQL_DATABASE}?driver=ODBC+Driver+17+for+SQL+Server'
+    # Azure Blob Storage
+    BLOB_ACCOUNT = 'zoo1store'           # your storage account name
+    BLOB_STORAGE_KEY = 'EQqq8fBx7VLwVC1Y0UAGMqGhByXFk/77i4KLqE0ORN2VLFIv69OVjhrvYrQkNt60e4LzEujKbZM7+AStQcup1w=='
+    BLOB_CONTAINER = '$logs'
