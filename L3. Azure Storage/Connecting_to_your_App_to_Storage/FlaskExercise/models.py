@@ -1,4 +1,4 @@
-'''from FlaskExercise import app, db
+from FlaskExercise import app, db
 from flask import flash
 from werkzeug.utils import secure_filename
 from azure.storage.blob import BlobServiceClient
@@ -35,54 +35,4 @@ class Animal(db.Model):
                 flash(err)
             self.image_path = filename
         db.session.commit()
-'''
-from FlaskExercise import db
-from flask import current_app, flash
-from werkzeug.utils import secure_filename
-from azure.storage.blob import BlobServiceClient
-import uuid
 
-class Animal(db.Model):
-    __tablename__ = 'animals'
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(75))
-    scientific_name = db.Column(db.String(75))
-    description = db.Column(db.String(800))
-    image_path = db.Column(db.String(100))
-
-    def __repr__(self):
-        return '<Animal {}>'.format(self.name)
-
-    def save_changes(self, file):
-        """
-        Save changes to the database and upload the file to Blob Storage if provided.
-        """
-        if file:
-            # Access Flask config inside the function (after app context exists)
-            blob_container = current_app.config['BLOB_CONTAINER']
-            blob_service = BlobServiceClient(
-                account_url=f"https://{current_app.config['BLOB_ACCOUNT']}.blob.core.windows.net",
-                credential=current_app.config['BLOB_STORAGE_KEY']
-            )
-
-            # Generate a secure, unique filename
-            filename = secure_filename(file.filename)
-            file_extension = filename.rsplit('.', 1)[1]
-            random_filename = str(uuid.uuid1())
-            filename = random_filename + '.' + file_extension
-
-            try:
-                # Upload new image
-                blob_client = blob_service.get_blob_client(container=blob_container, blob=filename)
-                blob_client.upload_blob(file, overwrite=True)
-
-                # Delete old image if exists
-                if self.image_path:
-                    old_blob = blob_service.get_blob_client(container=blob_container, blob=self.image_path)
-                    old_blob.delete_blob()
-            except Exception as err:
-                flash(err)
-
-            self.image_path = filename
-
-        db.session.commit()
