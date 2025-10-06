@@ -36,20 +36,20 @@ class Animal(db.Model):
             self.image_path = filename
         db.session.commit()
 '''
-
 from FlaskExercise import app, db
 from flask import flash
 from werkzeug.utils import secure_filename
 from azure.storage.blob import BlobServiceClient
 import uuid
 
-# ---------- Blob setup ----------
+# ---------- Blob Storage setup ----------
 blob_container = app.config['BLOB_CONTAINER']
 blob_service = BlobServiceClient(
     account_url=f"https://{app.config['BLOB_ACCOUNT']}.blob.core.windows.net",
     credential=app.config['BLOB_STORAGE_KEY']
 )
 
+# ---------- Animal model ----------
 class Animal(db.Model):
     __tablename__ = 'animals'
     id = db.Column(db.Integer, primary_key=True)
@@ -87,3 +87,5 @@ class Animal(db.Model):
             self.image_path = filename
 
         db.session.commit()
+
+
