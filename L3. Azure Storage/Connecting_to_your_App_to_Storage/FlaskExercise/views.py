@@ -1,4 +1,4 @@
-'''from flask import render_template, redirect, request
+from flask import render_template, redirect, request
 from FlaskExercise import app, db
 from FlaskExercise.forms import AnimalForm
 import FlaskExercise.models as models
@@ -24,40 +24,6 @@ def animal(id):
     if form.validate_on_submit():
         animal.save_changes(request.files['image_path'])
         return redirect('/')
-    return render_template(
-        'animal.html',
-        imageSource=imageSourceUrl,
-        form=form,
-        animal=animal
-    )
-'''
-
-from flask import render_template, redirect, request, current_app
-from FlaskExercise import app, db
-from FlaskExercise.forms import AnimalForm
-import FlaskExercise.models as models
-
-@app.route('/')
-@app.route('/home')
-def home():
-    animals = models.Animal.query.all()
-    # Build image URL inside the function
-    imageSourceUrl = f"https://{current_app.config['BLOB_ACCOUNT']}.blob.core.windows.net/{current_app.config['BLOB_CONTAINER']}/"
-    return render_template(
-        'index.html',
-        imageSource=imageSourceUrl,
-        animals=animals
-    )
-
-@app.route('/animal/<int:id>', methods=['GET', 'POST'])
-def animal(id):
-    animal = models.Animal.query.get(int(id))
-    form = AnimalForm(formdata=request.form, obj=animal)
-    if form.validate_on_submit():
-        # Upload image
-        animal.save_changes(request.files['image_path'])
-        return redirect('/')
-    imageSourceUrl = f"https://{current_app.config['BLOB_ACCOUNT']}.blob.core.windows.net/{current_app.config['BLOB_CONTAINER']}/"
     return render_template(
         'animal.html',
         imageSource=imageSourceUrl,
