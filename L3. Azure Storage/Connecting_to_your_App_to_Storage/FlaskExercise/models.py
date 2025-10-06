@@ -27,10 +27,16 @@ class Animal(db.Model):
             filename = randomFilename + '.' + fileExtension
             try:
                 # TODO: Get a blob client and upload the blob
-                pass
+               blob_client=blob_service.get_blob_client
+                (container=blob_container,blob=filename)
+                blob_client.upload_blob(file)
+               # pass
                 if self.image_path:
                     # TODO: Get a blob client and delete the previous blob
-                    pass
+                    blob_client=blob_service.get_blob_client
+                    (container=blob_container,blob=filename)
+                    blob_client.delete_blob()
+                    #pass
             except Exception as err:
                 flash(err)
             self.image_path = filename
